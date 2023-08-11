@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.rpv-container {
+    padding: 1rem 1rem 1rem 1rem; 
+    border-radius: 0.375rem; 
+    width: 100%; 
+    background-color: #F9FAFB; 
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+}
+.rpv-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    font-size: 0.75rem;
+    line-height: 1rem; 
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+.rpv-rule {
+    display: flex; 
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem; 
+    grid-column: span 1 / span 1; 
+    align-items: center; 
+}
+.rpv-progress-bar {
+    -moz-transition-property: all;
+    -moz-transition-timing-function: cubic-bezier(0.435, 0.150, 0.000, 1.000);
+    -moz-transition-duration: 800ms;
+    -moz-transition-delay: 0ms;
+
+    -webkit-transition-property: all;
+    -webkit-transition-timing-function: cubic-bezier(0.435, 0.150, 0.000, 1.000);
+    -webkit-transition-duration: 800ms;
+    -webkit-transition-delay: 0ms;
+
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.435, 0.150, 0.000, 1.000);
+    transition-duration: 600ms;
+    transition-delay: 0ms;
+
+    border-radius: 0.25rem; 
+    height: 0.5rem;
+    position: absolute;
+    bottom: 0;
+
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) { 
+    .rpv-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+   }

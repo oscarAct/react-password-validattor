@@ -1,0 +1,108 @@
+{
+    "name": "react-password-validator",
+    "version": "1.0.0",
+    "description": "Password validator component for react applicacions",
+    "license": "MIT",
+    "author": "Oscar Morales Davis",
+    "keywords": [
+        "password",
+        "strength",
+        "indicator",
+        "meter",
+        "validator",
+        "validation",
+        "form",
+        "signup",
+        "account",
+        "creation",
+        "signin",
+        "react",
+        "checker",
+        "strong",
+        "capital",
+        "number",
+        "symbol",
+        "length",
+        "create account",
+        "password reset",
+        "check password strength",
+        "password checker",
+        "password validator",
+        "react password checker",
+        "react password validator",
+        "password strength checker",
+        "strength checker",
+        "password checker",
+        "password checker strength",
+        "strength password checker",
+        "check-password-strength",
+        "password-strength-checker",
+        "strength-checker",
+        "password-checker",
+        "password-checker-strength",
+        "strength-password-checker",
+        "pass-strength"
+    ],
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "main": "./dist/react-password-validator.umd.js",
+    "module": "./dist/react-password-validator.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/react-password-validator.es.js",
+            "require": "./dist/react-password-validator.umd.js"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "test": "vitest run",
+        "watch": "vitest",
+        "coverage": "vitest run --coverage"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "eslintConfig": {
+        "env": {
+            "browser": true,
+            "node": true,
+            "es2020": true
+        },
+        "extends": [
+            "eslint:recommended",
+            "plugin:react/recommended"
+        ],
+        "parserOptions": {
+            "sourceType": "module"
+        }
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^9.3.1",
+        "@testing-library/react": "^14.0.0",
+        "@vitejs/plugin-react": "^4.0.4",
+        "autoprefixer": "^10.4.14",
+        "c8": "^8.0.1",
+        "eslint": "^8.46.0",
+        "eslint-plugin-react": "^7.33.1",
+        "jsdom": "^22.1.0",
+        "postcss": "^8.4.27",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-test-renderer": "^18.2.0",
+        "tailwindcss": "^3.3.3",
+        "vite": "^4.4.8",
+        "vitest": "^0.34.1"
+    }
+}
