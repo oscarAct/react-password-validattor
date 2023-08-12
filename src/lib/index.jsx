@@ -1,52 +1,59 @@
 import React from 'react'
-import { REGEXP as regexp, ShowMessage, checkForbiddenWords, ShowIcon, updatePercentage } from './uttils/utilities';
+import { REGEXP as regexp, 
+         ShowMessage, 
+         checkForbiddenWords, 
+         ShowIcon, 
+         updatePercentage, 
+         ShowProgressBar} from './uttils/utilities';
 
 
-export default function PasswordisValidator({
+export default function PasswordValidator({
     rules = ['minLength', 'maxLength', 'notEmpty', 'capital', 'lowercase', 'specialChar'],
-    minLength = 0,
-    maxLength = 0,
+    minLength = 8,
+    maxLength = 32,
     password = '',
     confirmedPassword = '',
     forbiddenWords = ['', 0],
     onValidatorChange = () => { },
     iconSize = 0,
     config = {
-        minLength: {
-            successText: '',
-            errorText: ''
-        },
-        maxLength: {
-            successText: '',
-            errorText: ''
-        },
-        specialChar: {
-            successText: '',
-            errorText: ''
-        },
-        number: {
-            successText: '',
-            errorText: ''
-        },
-        capital: {
-            successText: '',
-            errorText: ''
-        },
-        matches: {
-            successText: '',
-            errorText: ''
-        },
-        lowercase: {
-            successText: '',
-            errorText: ''
-        },
-        notEmpty: {
-            successText: '',
-            errorText: ''
-        },
-        shouldNotContain: {
-            successText: '',
-            errorText: ''
+        customText: {
+            minLength: {
+                successText: '',
+                errorText: ''
+            },
+            maxLength: {
+                successText: '',
+                errorText: ''
+            },
+            specialChar: {
+                successText: '',
+                errorText: ''
+            },
+            number: {
+                successText: '',
+                errorText: ''
+            },
+            capital: {
+                successText: '',
+                errorText: ''
+            },
+            matches: {
+                successText: '',
+                errorText: ''
+            },
+            lowercase: {
+                successText: '',
+                errorText: ''
+            },
+            notEmpty: {
+                successText: '',
+                errorText: ''
+            },
+            shouldNotContain: {
+                successText: '',
+                errorText: ''
+            },
         },
         showProgressBar: false,
         classNames: {
@@ -66,53 +73,53 @@ export default function PasswordisValidator({
 
     const dictionary = {
         minLength: {
-            successText: config?.minLength?.successText || `Min length ${minLength} characters`,
-            errorText: config?.minLength?.errorText || `Please provide at least ${minLength}`,
+            successText: config?.customText?.minLength?.successText || `Min length ${minLength} characters`,
+            errorText: config?.customText?.minLength?.errorText || `Please provide at least ${minLength} characters`,
             isValid: false
         },
         maxLength: {
-            successText: config?.maxLength?.successText || `Max length ${maxLength} characters`,
-            errorText: config?.maxLength?.errorText || `Please provide less than ${maxLength} characters`,
+            successText: config?.customText?.maxLength?.successText || `Max length ${maxLength} characters`,
+            errorText: config?.customText?.maxLength?.errorText || `Please provide less than ${maxLength} characters`,
             isValid: false
         },
         specialChar: {
-            successText: config?.specialChar?.successText || `Special character`,
-            errorText: config?.specialChar?.errorText || `Missing special character`,
+            successText: config?.customText?.specialChar?.successText || `Special character`,
+            errorText: config?.customText?.specialChar?.errorText || `Missing special character`,
             isValid: false
         },
         number: {
-            successText: config?.number?.successText || `Password contains numbers`,
-            errorText: config?.number?.errorText || `Please include at least one number`,
+            successText: config?.customText?.number?.successText || `Password contains numbers`,
+            errorText: config?.customText?.number?.errorText || `Please include at least one number`,
             isValid: false
         },
         capital: {
-            successText: config?.capital?.successText || `Contains capital letter`,
-            errorText: config?.capital?.errorText || `Passwor sould contain a capital letter`,
+            successText: config?.customText?.capital?.successText || `Contains capital letter`,
+            errorText: config?.customText?.capital?.errorText || `Passwor sould contain a capital letter`,
             isValid: false
         },
         matches: {
-            successText: config?.matches?.successText || `Passwords match`,
-            errorText: config?.matches?.errorText || `Passwords doesn't match`,
+            successText: config?.customText?.matches?.successText || `Passwords match`,
+            errorText: config?.customText?.matches?.errorText || `Passwords doesn't match`,
             isValid: false
         },
         lowercase: {
-            successText: config?.lowercase?.successText || `Contains lowercase letter`,
-            errorText: config?.lowercase?.errorText || `Pelase add at least one lowecase letter`,
+            successText: config?.customText?.lowercase?.successText || `Contains lowercase letter`,
+            errorText: config?.customText?.lowercase?.errorText || `Pelase add at least one lowecase letter`,
             isValid: false
         },
         notEmpty: {
-            successText: config?.notEmpty?.successText || `Password is not empty`,
-            errorText: config?.notEmpty?.errorText || `Password cannot be empty`,
+            successText: config?.customText?.notEmpty?.successText || `Password is not empty`,
+            errorText: config?.customText?.notEmpty?.errorText || `Password cannot be empty`,
             isValid: false
         },
         shouldNotContain: {
-            successText: config?.shouldNotContain?.successText || `Not contains forbidden words`,
-            errorText: config?.shouldNotContain?.errorText || `Password contains forbidden words`,
+            successText: config?.customText?.shouldNotContain?.successText || `Not contains forbidden words`,
+            errorText: config?.customText?.shouldNotContain?.errorText || `Password contains forbidden words`,
             isValid: true
         },
     }
     const validate = () => {
-        if (!Array.isArray(rules))
+        if (Array.isArray(rules) == false)
             throw new Error(`Value 'rules' expect to be an Array, but we got ${typeof rules}`);
 
         rules.forEach(rule => {
@@ -124,7 +131,7 @@ export default function PasswordisValidator({
                     dictionary[rule].isValid = password.length < minLength ? false : true;
                     break;
                 case 'maxLength':
-                    if (typeof minLength !== "number")
+                    if (typeof maxLength !== "number")
                         throw new Error(`Value 'maxLength' expect to be a number, but we got ${typeof minLength}`);
 
                     dictionary[rule].isValid = password.length > maxLength ? false : true;
@@ -148,21 +155,23 @@ export default function PasswordisValidator({
                     dictionary[rule].isValid = password == confirmedPassword ? true : false;
                     break;
                 case 'shouldNotContain':
-                    if (typeof forbiddenWords !== "object")
-                        throw new Error(`Value 'forbiddenWords' expect to be an object (array of strings), but we got ${typeof minLength}`);
-
-                    if (checkForbiddenWords(password, forbiddenWords)) {
-                        dictionary[rule].isValid = false;
-                    } else {
-                        dictionary[rule].isValid = true;
+                    if (Array.isArray(forbiddenWords) == false){
+                        throw new Error(`Value 'forbiddenWords' expect to be an array, but we got ${typeof forbiddenWords}`);
+                    }
+                    else {
+                        if (checkForbiddenWords(password, forbiddenWords)) {
+                            dictionary[rule].isValid = false;
+                        } else {
+                            dictionary[rule].isValid = true;
+                        }
                     }
                     break;
                 default:
-                    break;
+                    throw new Error(`Unknown rule ${rule}`);
             }
         });
         rules.forEach(rule => {
-            if (dictionary[rule].isValid == true) {
+            if (dictionary[rule]?.isValid == true) {
                 cont++;
             }
         });
@@ -172,22 +181,21 @@ export default function PasswordisValidator({
     percentage = updatePercentage(cont, rules);
     return (
         <>
-            <div className={`rpv-container ${config?.classNames?.containerClass}`}>
-                <div className={`rpv-grid ${config?.classNames?.gridClass}`}>
+            <div aria-label='Password validation grid container' className={`rpv-container ${config?.classNames?.containerClass ? config?.classNames?.containerClass : ''}`}>
+                <div aria-label='Grid containig password validations' className={`rpv-grid ${config?.classNames?.gridClass ? config?.classNames?.gridClass : ''}`}>
                     {
                         rules.map(rule => {
                             return (
-                                <div className={`rpv-rule ${config?.classNames?.ruleClass}`} key={rule}>
+                                <div aria-label='Password rule' className={`rpv-rule ${config?.classNames?.ruleClass ? config?.classNames?.ruleClass : ''}`} key={rule}>
                                     <ShowIcon rule={rule} dictionary={dictionary} iconSize={iconSize} />
-                                    <span className=''>
+                                    <span aria-label={`Rule description`} className=''>
                                         <ShowMessage rule={rule} dictionary={dictionary} />
                                     </span>
                                 </div>
                             )
                         })
                     }
-                    <div style={{ display: config?.showProgressBar ? "block" : "none", width: `${percentage}%`, opacity: percentage < 100 ? "1" : "0", backgroundImage: "linear-gradient(to right, #ff0844 0%, #ffb199 100%)" }} className={`rpv-progress-bar ${config?.classNames?.invalidProgressBarClass}`}></div>
-                    <div style={{ display: config?.showProgressBar ? "block" : "none", width: `${percentage}%`, opacity: percentage == 100 ? "1" : "0", backgroundImage: "linear-gradient(to right, #0ba360 0%, #3cba92 100%)" }} className={`rpv-progress-bar ${config?.classNames?.validProgressBarClass}`}></div>
+                    <ShowProgressBar config={config} percentage={percentage} />
                 </div>
             </div>
         </>
