@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react';
+import './index.css';
 import { REGEXP as regexp, 
          ShowMessage, 
          checkForbiddenWords, 
          ShowIcon, 
          updatePercentage, 
-         ShowProgressBar} from './uttils/utilities';
+         ShowProgressBar,
+         generatePassword, 
+         validateRules} from './utils/utilities';
+
+import { CopyIcon } from './components/CopyIcon';
+import { RefreshIcon } from './components/RefreshIcon';
+import { DoubleCheckIcon } from './components/DoubleCheckIcon';
 
 
-export default function PasswordValidator({
+export default function PasswordValidattor({
     rules = ['minLength', 'maxLength', 'notEmpty', 'capital', 'lowercase', 'specialChar'],
     minLength = 8,
     maxLength = 32,
@@ -56,6 +63,7 @@ export default function PasswordValidator({
             },
         },
         showProgressBar: false,
+        showPasswordSuggestion: false,
         classNames: {
             containerClass: '',
             gridClass: '',
@@ -66,6 +74,14 @@ export default function PasswordValidator({
     }
 }) {
 
+    // Password generation rules
+    const passGenRules = validateRules(rules);
+    const generateNewPassword = () => {
+        let characters = '';
+        return generatePassword(passGenRules, characters, maxLength - 1);
+    }
+    const [suggestedPassword, setSuggestedPassword] = useState(generateNewPassword());
+    const [copied, setCopied] = useState(false);
     iconSize = iconSize || 16;
 
     let cont = 0;
@@ -118,7 +134,7 @@ export default function PasswordValidator({
             isValid: true
         },
     }
-    const validate = () => {
+    const validateStrcture = () => {
         if (Array.isArray(rules) == false)
             throw new Error(`Value 'rules' expect to be an Array, but we got ${typeof rules}`);
 
@@ -177,11 +193,40 @@ export default function PasswordValidator({
         });
         cont == rules.length ? onValidatorChange(true) : onValidatorChange(false);
     }
-    validate();
+    const ShowPasswordSuggestion = () => {
+        if(config.showPasswordSuggestion) {
+            return (
+                <div className="rpv-suggested-password" aria-label='Password suggestion'>
+                    <span aria-label='Suggested password'>{ suggestedPassword }</span>
+                    <span className='rpv-copy-password copy-icon' aria-label='Copy suggested password' onClick={() => { copyPassword() }}>
+                        <CopyIcon iconSize={16} color={'#d1d5db'} styles={{ display: copied == true ? 'none' : 'block' }} />
+                    </span>
+                    <span className='rpv-copied-to-clipboard copied-icon' aria-label='Password copied to clipboard'>
+                        <DoubleCheckIcon iconSize={16} classNames={'rpv-default-icon copied-to-clipboard'} color={'#10b981'} styles={{ display: copied == true ? 'block' : 'none' }} />
+                    </span>
+                    <span className='rpv-generate-new refresh-icon' aria-label='Generate new password suggestion' onClick={() => { setSuggestedPassword(generateNewPassword()) }}>
+                        <RefreshIcon iconSize={16} color={'#d1d5db'} />
+                    </span>
+                </div>
+            )
+        }
+    }
+    const copyPassword = async () => {
+        await navigator.clipboard.writeText(suggestedPassword);
+        switchCopiedState(true);
+        setTimeout(() => {
+            switchCopiedState(false);
+        }, 2000);
+    }
+    function switchCopiedState(value) {
+        setCopied(value)
+    }
+    validateStrcture();
     percentage = updatePercentage(cont, rules);
     return (
         <>
-            <div aria-label='Password validation grid container' className={`rpv-container ${config?.classNames?.containerClass ? config?.classNames?.containerClass : ''}`}>
+            <div id='rpv' aria-label='Password validation grid container' className={`rpv-container ${config?.classNames?.containerClass ? config?.classNames?.containerClass : ''}`}>
+                <ShowPasswordSuggestion />
                 <div aria-label='Grid containig password validations' className={`rpv-grid ${config?.classNames?.gridClass ? config?.classNames?.gridClass : ''}`}>
                     {
                         rules.map(rule => {

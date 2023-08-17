@@ -1,7 +1,8 @@
 {
-    "name": "react-password-validator",
-    "version": "1.0.0",
+    "name": "react-password-validattor",
+    "version": "1.1.6",
     "description": "Password validator component for react applicacions",
+    "public": true,
     "license": "MIT",
     "author": "Oscar Morales Davis",
     "keywords": [
@@ -26,6 +27,12 @@
         "create account",
         "password reset",
         "check password strength",
+        "password strength validator",
+        "react password validator",
+        "password validation",
+        "password verifier",
+        "react password validation",
+        "react password verifier",
         "password checker",
         "password validator",
         "react password checker",
@@ -45,16 +52,13 @@
     ],
     "files": [
         "dist",
-        "README.md"
+        "dist/style.css",
+        "dist/index.d.ts",
+        "README.md",
+        "CONTRIBUTING.md"
     ],
-    "main": "./dist/react-password-validator.umd.js",
-    "module": "./dist/react-password-validator.es.js",
-    "exports": {
-        ".": {
-            "import": "./dist/react-password-validator.es.js",
-            "require": "./dist/react-password-validator.umd.js"
-        }
-    },
+    "main": "dist/password-validattor.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "dev": "vite",
         "build": "vite build",

@@ -6,14 +6,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/lib/index.jsx'),
-      name: 'My Component',
-      fileName: (format) => `my-component.${format}.js`
+      name: 'PasswordValidattor',
+      fileName: (format) => `password-validattor.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
       output: {
         globals: {
-          react: 'React'
+          react: 'React',
         }
       }
     }

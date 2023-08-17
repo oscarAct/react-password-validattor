@@ -5,13 +5,46 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const onValidatorChangeHandler = (result) => {
-    console.log(result);
+    // result should be true for valid password or false to invalid password
+    // Handle here your password validation status
   }
   return (
     <>
-    <input type="text" onChange={(e) => setPassword(e.target.value)} value={password} name="price" id="price" className="block mb-11 w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="0.00" />
-    <input type="text" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} name="price" id="price" className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="0.00" />
-    <PasswordValidator rules={['shouldNotContain']} forbiddenWords={'8'} config={{ showProgressBar: true }} />
+      <div className='w-5/12 mx-auto mt-72'>
+        <input type="password" onChange={(e) => setPassword(e.target.value)} value={password} name='password' placeholder="Enter your password" />
+        <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} name="confirmedPassword" placeholder="Please re-enter your password" />
+        <PasswordValidator 
+          rules={['minLength', 
+                  'maxLength', 
+                  'specialChar', 
+                  'number', 
+                  'capital', 
+                  'matches', 
+                  'lowercase', 
+                  'notEmpty', 
+                  'shouldNotContain']}
+          forbiddenWords={['John', 'Doe']} 
+          minLength={8}
+          maxLength={16}
+          password={password}
+          confirmedPassword={confirmPassword}
+          iconSize={16}
+          onValidatorChange={onValidatorChangeHandler}
+          config = {{
+            // show porgress bar
+            showProgressBar: true,
+            // Password suggestion
+            showPasswordSuggestion: true,
+            // Custom classes
+            classNames: {
+                containerClass: 'my-container-custom-class',
+                gridClass: 'my-grid-custom-class',
+                ruleClass: 'my-rule-custom-class',
+                validProgressBarClass: 'my-valid-progress-bar-custom-class',
+                invalidProgressBarClass: 'my-invalid-progress-bar-custom-class'
+            }
+        }} />
+      </div>
     </>
   )
 }

@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { render, screen, cleanup } from '@testing-library/react'
-import { describe, expect, test, afterEach } from 'vitest'
+import { render, screen, cleanup, getByLabelText, fireEvent } from '@testing-library/react'
+import { describe, expect, test, afterEach, vi } from 'vitest'
 import PasswordValidator from './index'
-import { spyOn } from 'tinyspy'
 
 describe('Options validator tests', () => {
   afterEach(cleanup)
@@ -164,7 +163,7 @@ describe('Functionality of password validators', () => {
   test('Should return true if password matches confirmed password', () => {
     let validatorStatus = true;
     const onValidatorChange = (status) => { validatorStatus = status };
-    render(<PasswordValidator rules={['matches']} password='joh?n#45@Do?e2255' confirmedPassword='joh?n#45@Do?e2255'  onValidatorChange={onValidatorChange} />)
+    render(<PasswordValidator rules={['matches']} password='joh?n#45@Do?e2255' confirmedPassword='joh?n#45@Do?e2255' onValidatorChange={onValidatorChange} />)
     expect(validatorStatus).toBe(true);
   })
 
@@ -178,7 +177,7 @@ describe('Functionality of password validators', () => {
   test('Should return true if password matches confirmed password', () => {
     let validatorStatus = true;
     const onValidatorChange = (status) => { validatorStatus = status };
-    render(<PasswordValidator rules={['matches']} password='joh?n#45@Do?e2255' confirmedPassword='joh?n#45@Do?e2255'  onValidatorChange={onValidatorChange} />)
+    render(<PasswordValidator rules={['matches']} password='joh?n#45@Do?e2255' confirmedPassword='joh?n#45@Do?e2255' onValidatorChange={onValidatorChange} />)
     expect(validatorStatus).toBe(true);
   })
 
@@ -199,44 +198,44 @@ describe('Functionality of password validators', () => {
 
 describe('Configuration of custom text tests', () => {
   afterEach(cleanup)
-  const myOwnTexts = { 
-    minLength: { 
-        errorText: 'MLErrorText', 
-        successText: 'MLSuccessText' 
+  const myOwnTexts = {
+    minLength: {
+      errorText: 'MLErrorText',
+      successText: 'MLSuccessText'
     },
-    capital: { 
-        errorText: 'CErrorText', 
-        successText: 'CSuccessText' 
+    capital: {
+      errorText: 'CErrorText',
+      successText: 'CSuccessText'
     },
-    lowercase: { 
-        errorText: 'LCErrorText', 
-        successText: 'LCSuccessText' 
+    lowercase: {
+      errorText: 'LCErrorText',
+      successText: 'LCSuccessText'
     },
-    matches: { 
-        errorText: 'MErrorText', 
-        successText: 'MSuccessText' 
+    matches: {
+      errorText: 'MErrorText',
+      successText: 'MSuccessText'
     },
-    maxLength: { 
-        errorText: 'MaxLErrorText', 
-        successText: 'MaxLSuccessText' 
+    maxLength: {
+      errorText: 'MaxLErrorText',
+      successText: 'MaxLSuccessText'
     },
-    notEmpty: { 
-        errorText: 'NEErrorText', 
-        successText: 'NESuccessText' 
+    notEmpty: {
+      errorText: 'NEErrorText',
+      successText: 'NESuccessText'
     },
-    number: { 
-        errorText: 'NErrorText', 
-        successText: 'NSuccessText' 
+    number: {
+      errorText: 'NErrorText',
+      successText: 'NSuccessText'
     },
-    shouldNotContain: { 
-        errorText: 'SNCErrorText', 
-        successText: 'SNCSuccessText' 
+    shouldNotContain: {
+      errorText: 'SNCErrorText',
+      successText: 'SNCSuccessText'
     },
-    specialChar: { 
-        errorText: 'SCErrorText', 
-        successText: 'SCSuccessText' 
+    specialChar: {
+      errorText: 'SCErrorText',
+      successText: 'SCSuccessText'
     },
-}
+  }
   // Min length
   test("Should show user's custom minLength error text", () => {
     render(<PasswordValidator rules={['minLength']} config={{ customText: myOwnTexts }} minLength={8} password='1234567' />)
@@ -276,7 +275,7 @@ describe('Configuration of custom text tests', () => {
     render(<PasswordValidator rules={['capital']} config={{ customText: myOwnTexts }} password='ABC' />)
     expect(screen.getByText(myOwnTexts.capital.successText))
   })
-  
+
   // Capital letter
   test("Should show user's custom capital error text", () => {
     render(<PasswordValidator rules={['capital']} config={{ customText: myOwnTexts }} password='abc' />)
@@ -346,14 +345,61 @@ describe('General configuration tests', () => {
     expect(screen.getAllByLabelText('progress bar'));
   })
 
+  test("Should render password suggestion", () => {
+    render(<PasswordValidator rules={['number']} config={{ showPasswordSuggestion: true }} />)
+    expect(screen.getAllByLabelText('Password suggestion'));
+  })
+
+  test("Should copy the suggested password to clipboard", async () => {
+    
+    // Mock of the clipboard copy fn
+    const clipboardWriteTextMock = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: clipboardWriteTextMock,
+      },
+    });
+    render(<PasswordValidator rules={['number', 'lowercase', 'capital']} minLength={10} maxLength={16} config={{ showPasswordSuggestion: true }} />)
+
+    const suggestedPassword = screen.getByLabelText('Suggested password').innerHTML;
+    const copyButton = screen.getByLabelText('Copy suggested password');
+
+    await fireEvent.click(copyButton);
+    await Promise.resolve();
+
+    const dblCheckIcon = document.querySelector('svg.copied-to-clipboard');
+    expect(dblCheckIcon.getAttribute('style').indexOf('display: block')).toBeGreaterThan(-1);
+
+    vi.useFakeTimers();
+    vi.advanceTimersByTime(4000);
+
+    expect(dblCheckIcon.getAttribute('style').indexOf('display: block')).toBeLessThanOrEqual(0);
+    expect(clipboardWriteTextMock).toHaveBeenCalledWith(suggestedPassword);
+  })
+
+  test("Should suggest a new password", async () => {
+    
+    // Mock of the clipboard copy fn
+
+    render(<PasswordValidator rules={['number', 'lowercase', 'capital']} minLength={10} maxLength={16} config={{ showPasswordSuggestion: true }} />)
+
+    const firstSuggestedPassword = screen.getByLabelText('Suggested password').innerHTML;
+    const refreshButton = screen.getByLabelText('Generate new password suggestion');
+
+    fireEvent.click(refreshButton);
+
+    const secondSuggestedPassword = screen.getByLabelText('Suggested password').innerHTML;
+    expect(firstSuggestedPassword).not.toBe(secondSuggestedPassword);
+  })
+
   test("Should add custom classes to the different elements", () => {
     let password = '';
-    const myClasses = { 
-        containerClass: 'containerClass', 
-        gridClass: 'gridClass',
-        invalidProgressBarClass: 'invalidProgressClass', 
-        ruleClass: 'ruleClass', 
-        validProgressBarClass: 'validProgressClass' 
+    const myClasses = {
+      containerClass: 'containerClass',
+      gridClass: 'gridClass',
+      invalidProgressBarClass: 'invalidProgressClass',
+      ruleClass: 'ruleClass',
+      validProgressBarClass: 'validProgressClass'
     }
     render(<PasswordValidator rules={['number']} password={password} confirmedPassword={password} config={{ showProgressBar: true, classNames: myClasses }} />)
 
@@ -363,42 +409,64 @@ describe('General configuration tests', () => {
     expect(document.querySelector('.rpv-container').classList.contains(myClasses.containerClass)).toBeTruthy();
     expect(document.querySelector('.rpv-grid').classList.contains(myClasses.gridClass)).toBeTruthy();
     expect(document.querySelector('.rpv-rule').classList.contains(myClasses.ruleClass)).toBeTruthy();
-    
+
     expect(progressValid).toBeDefined();
     expect(progressInvalid).toBeDefined();
   })
 })
 
+describe('Progress bar status validations', () => {
+  afterEach(cleanup)
+
+  test("Should set progress bar as valid if all rules are met", () => {
+    render(<PasswordValidator rules={['minLength']} minLength={8} password='12345678' config={{ showProgressBar: true }} />)
+    let validProgress = -1;
+    validProgress = document.querySelector('div.rpv-progress-bar.valid')
+      .getAttribute('style')
+      .indexOf('opacity: 1');
+    expect(validProgress).toBeGreaterThan(-1);
+  });
+
+  test("Should set progress bar as invalid if some of the rules not matches", () => {
+    render(<PasswordValidator rules={['minLength', 'number']} minLength={10} password='abcdef' config={{ showProgressBar: true }} />)
+    let validProgress = -1;
+    validProgress = document.querySelector('div.rpv-progress-bar.invalid')
+      .getAttribute('style')
+      .indexOf('opacity: 1');
+    expect(validProgress).toBeGreaterThan(-1);
+  });
+})
+
 describe("Throw tests", () => {
-    afterEach(cleanup)
+  afterEach(cleanup)
 
-    test("Should throw if rules is not an array", () => {
-        expect(() => {
-            render(<PasswordValidator rules={'number'} config={{ showProgressBar: true }} />)
-        }).toThrow();
-    });
+  test("Should throw if rules is not an array", () => {
+    expect(() => {
+      render(<PasswordValidator rules={'number'} config={{ showProgressBar: true }} />)
+    }).toThrow();
+  });
 
-    test("Should throw if minLength is not a number", () => {
-        expect(() => {
-            render(<PasswordValidator rules={['minLength']} minLength={'8'} config={{ showProgressBar: true }} />)
-        }).toThrow();
-    });
+  test("Should throw if minLength is not a number", () => {
+    expect(() => {
+      render(<PasswordValidator rules={['minLength']} minLength={'8'} config={{ showProgressBar: true }} />)
+    }).toThrow();
+  });
 
-    test("Should throw if maxLength is not a number", () => {
-        expect(() => {
-            render(<PasswordValidator rules={['maxLength']} maxLength={'8'} config={{ showProgressBar: true }} />)
-        }).toThrow();
-    });
+  test("Should throw if maxLength is not a number", () => {
+    expect(() => {
+      render(<PasswordValidator rules={['maxLength']} maxLength={'8'} config={{ showProgressBar: true }} />)
+    }).toThrow();
+  });
 
-    test("Should throw if forbiddenWords is not an array", () => {
-        expect(() => {
-            render(<PasswordValidator rules={['shouldNotContain']} forbiddenWords={'8'} />)
-        }).toThrow();
-    });
+  test("Should throw if forbiddenWords is not an array", () => {
+    expect(() => {
+      render(<PasswordValidator rules={['shouldNotContain']} forbiddenWords={'8'} />)
+    }).toThrow();
+  });
 
-    test("Should throw if an unknown rule is passed in the rules array", () => {
-        expect(() => {
-            render(<PasswordValidator rules={['UnknownRule']} />)
-        }).toThrow();
-    });
-  })
+  test("Should throw if an unknown rule is passed in the rules array", () => {
+    expect(() => {
+      render(<PasswordValidator rules={['UnknownRule']} />)
+    }).toThrow();
+  });
+})

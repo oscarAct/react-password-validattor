@@ -7,5 +7,9 @@ export default defineConfig({
     coverage: {
         reporter: ['text', 'json', 'html'],
       },
+    threads: false,
+    deps: {
+      inline: ['react-password-validattor']
+    }
   }
 })
