@@ -59,6 +59,14 @@
     ],
     "main": "dist/password-validattor.js",
     "types": "dist/index.d.ts",
+    "repository": {
+		"type": "git",
+		"url": "git+https://github.com/oscarAct/react-password-validattor.git"
+	},
+    "bugs": {
+		"url": "https://github.com/oscarAct/react-password-validattor/issues"
+	},
+    "homepage": "https://github.com/oscarAct/react-password-validattor/blob/master/README.md",
     "scripts": {
         "dev": "vite",
         "build": "vite build",

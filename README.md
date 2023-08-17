@@ -15,6 +15,7 @@ Coming soon website demo
 
 - Fully customizable
 - Good look and feel
+- Light weight
 - Responsive
 - Well tested
 
@@ -71,7 +72,7 @@ const App = () => {
           confirmedPassword={confirmPassword}
           iconSize={16}
           onValidatorChange={onValidatorChangeHandler}
-          config={{ showProgressBar: true }} />
+          config={{ showProgressBar: true, showPasswordSuggestion: true }} />
       </div>
     </>
   )
@@ -196,8 +197,10 @@ const App = () => {
                     errorText: 'My custom text'
                 },
             },
-            // show porgress bar
+            // Show porgress bar
             showProgressBar: false,
+            // Show password suggestions
+            showPasswordSuggestion: true,
             // Custom classes
             classNames: {
                 containerClass: 'my-container-custom-class',
