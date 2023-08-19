@@ -8,7 +8,7 @@ This react component lets the user validate their password fields quick and easi
 
 ![Password Validattor Demo](https://firebasestorage.googleapis.com/v0/b/gestor-de-archivos-34c41.appspot.com/o/react-components%2Fpassword%20validattor%20test.gif?alt=media&token=2e0c84f4-3180-47de-8dd2-4b6089fe3cf0)
 
-Coming soon website demo
+[Click here for full documentation and more examples](https://rpv.oscarmoralesd.com/)
 
 
 ## Features
