@@ -25,7 +25,7 @@ This react component lets the user validate their password fields quick and easi
 Install react-password-validattor with npm. In your react project run:
 
 ```bash
-  npm install react-password-validator
+  npm install react-password-validattor
 ```
 
 _Please note that react is a peer dependency of this package._
